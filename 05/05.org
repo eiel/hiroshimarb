@@ -1,0 +1,30 @@
+* ファイルの内容
+  - 05.arg - このファイル
+  - prac12.rb 12章の練習問題
+  - prac13.rb 13章の練習問題
+  - sinatra/ Sinatraのサンプル
+  - string.rb 12章の実例の一部
+  - hash.rb 13章の実例の一部
+* メモ
+   - 楽しいRuby
+   String
+   Hash
+   - Ruby会議2010
+     http://rubykaigi.tdiary.net/
+     http://rubykaigi.tdiary.net/20100828.html
+     http://rubykaigi.tdiary.net/20100829.html
+     http://rubykaigi.tdiary.net/20100830.html
+     - kwartz
+       http://www.nicovideo.jp/watch/sm11946905
+       http://www.kuwata-lab.com/kwartz/
+     - われわれは、GCをX倍遅くできる
+       個人的におもしろかった
+       http://www.nicovideo.jp/watch/sm11902231
+     - Rubyで作るDSLの基礎
+       http://www.nicovideo.jp/watch/sm11902338
+     - Ruby リファレンスマニュアル刷新計画 2010 夏
+       http://www.nicovideo.jp/watch/sm11914687
+   - Sinatra
+     Haml
+     - プログラマー向けテンプレートエンジン
+     Sass
