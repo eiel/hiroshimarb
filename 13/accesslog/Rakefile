@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+require "./access_log"
+
+task :foo do
+  puts "FOO!"
+end
+
+# 先に foo を処理する必要があるよ!
+task :bar => [:foo] do
+  puts "BAR!"
+end
+
+entries = []
+task :load do
+  logfile = ENV["LOGFILE"] || "access.log"
+  puts "loading #{logfile}"
+  File.open(logfile) do |io|
+     AccessLog.each_entry(io) do |entry|
+      entries << entry
+    end
+  end
+end
+
+desc "時間別アクセス"
+task :time => [:load] do
+  hour_count = Hash.new(0)
+  entries.each do |entry|
+    time = entry.time.split(":")
+    hour_count[time[1]] += 1
+  end
+  hours = hour_count.keys.sort
+  hours.each do |h|
+    puts "%s: %s" % [h, "#" * (hour_count[h]/3)]
+  end
+end
+
+desc "アクセスの多いurl"
+task :url => [:load] do
+  url_count = Hash.new(0)
+  entries.each do |entry|
+    url_count[entry.url] += 1
+  end
+  ranking = url_count.sort_by{|url,count| -count}
+  ranking.each do |url,count|
+    puts "%d: %p" % [count,url]
+  end
+end
+
+desc "エラーアクセス"
+task :error => [:load] do
+  entries.each do |entry|
+    if /^[45]/ =~ entry.status
+      puts "%p %p %p" % [entry.time,entry.status,entry.url]
+    end
+  end
+end

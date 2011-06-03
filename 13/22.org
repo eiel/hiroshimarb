@@ -1,0 +1,30 @@
+* HTMLの解析
+  - Nokogiri::HTMLを使う
+  - インスタンスの生成時にはディスクリプタわたすだけですと!!
+  - CSSセレクタが使えるらしいよ
+    Nokogiri::HTML#css()
+    -> 最近はjQueryのイメージがつよいよね。
+    - h3だけとりだす。
+      doc.css("h3")
+    - リンクのURLだけとりだす。
+      doc.css("a").map do |elem| elem["href"] end
+* RSSの解析
+  - RSSについて
+    - http://www.kanzaki.com/docs/sw/rss.html
+    - channelにRSSフィードの情報がある
+    - channelの後にはitemの繰り返し
+    - itemが一つの記事
+  - rssを使う
+  - RSS::Parser.parse
+  - p455の簡略してみると
+    rss.items.each do |item|
+      item.pubDate # 時刻のとりだし
+      item.title   # 記事のとりだし
+    end
+  - HTMLからRSSのURLを推測して取得する
+    - linkタグの
+      - rel 属性が alternate
+      - type 属性 application/rss+xml
+  - nokogiriには他にもいっぱい便利機能があるらしいよ
+    - 時間があったら試してみよう
+
