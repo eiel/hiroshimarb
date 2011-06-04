@@ -1,6 +1,10 @@
+20110603\013
 * 今日必要になるgem
   - nokogiri
     gem install nokogiri
+* 楽しいRUby
+  - 22章 HTMLやRSSの解析
+  - 23章 HTTPサーバのアクセスログ解析
 * 次回からの本を決める
 ** 候補
    | 目的                          | 書籍名                    | 摘要                                     | 主観的難易度 |
