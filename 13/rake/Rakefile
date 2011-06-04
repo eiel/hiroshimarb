@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+desc "ふーするらしいよ"
+task :foo do
+  puts "foo"
+end
+
+desc "ばーんんんん"
+task :bar => [:foo] do
+  puts "bar"
+end

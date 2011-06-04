@@ -5,7 +5,6 @@ task :foo do
   puts "FOO!"
 end
 
-# 先に foo を処理する必要があるよ!
 task :bar => [:foo] do
   puts "BAR!"
 end
