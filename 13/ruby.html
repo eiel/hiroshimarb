@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>オブジェクト指向スクリプト言語 Ruby</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/low.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+    <link title="Low vision" rel="alternate stylesheet" type="text/css" href="/stylesheets/low_vision_screen.css" media="screen" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="/ja/feeds/news.rss" rel="alternate" title="RSS" type="application/rss+xml" />
+    
+  </head>
+  <body id="home-page-layout">
+    <div id="page">
+      <div id="header">
+        <div id="logo"><img src="/images/logo.gif" width="331" height="119" alt="Ruby - A Programmer's Best Friend" title="" /></div>
+        <div class="site-links">
+<a href="/ja/downloads/">ダウンロード</a><span class="separator"> | </span><a href="/ja/documentation/">ドキュメント</a><span class="separator"> | </span><a href="/ja/libraries/">ライブラリ</a><span class="separator"> | </span><a href="/ja/community/">コミュニティ</a><span class="separator"> | </span><a href="/ja/dev/">コア開発</a><span class="separator"> | </span><a href="/ja/news/">ニュース</a><span class="separator"> | </span><a href="/ja/security/">セキュリティ</a><span class="separator"> | </span><a href="/ja/about/">Rubyとは</a>
+
+        </div>
+      </div>
+      <hr class="hidden-modern" />
+      <div id="main-wrapper">
+        <div id="main">
+          <div id="content-wrapper">
+            <div id="head-wrapper-1">
+              <div id="head-wrapper-2">
+                <div id="head">
+
+                  <div id="intro">
+                    <h1>Rubyとは&#8230;</h1>
+                    <p>オープンソースの動的なプログラミング言語で、
+                    シンプルさと高い生産性を備えています。
+                    エレガントな文法を持ち、自然に読み書きができます。</p>
+                    <p class="more"><a href="about/">もっと読む&#8230;</a></p>
+                  </div>
+                  <div id="code">
+
+                    <div class="comment"># The Greeter class</div>
+                    <div><span class="keyword">class</span> Greeter</div>
+                    <div>&nbsp;&nbsp;<span class="keyword">def</span> initialize<span class="op">(</span>name<span class="op">)</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;@name <span class="op">=</span> name<span class="op">.</span>capitalize</div>
+                    <div>&nbsp;&nbsp;<span class="keyword">end</span></div>
+                    <div class="blank-line">&nbsp;</div>
+                    <div>&nbsp;&nbsp;<span class="keyword">def</span> salute</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;puts <span class="string">"Hello #{</span><span class="op">@</span>name<span class="string">}!"</span></div>
+                    <div>&nbsp;&nbsp;<span class="keyword">end</span></div>
+                    <div><span class="keyword">end</span></div>
+                    <div class="blank-line">&nbsp;</div>
+                    <div class="comment"># Create a new object</div>
+                    <div>g <span class="op">=</span> Greeter<span class="op">.</span>new<span class="op">(</span><span class="string">"world"</span><span class="op">)</span></div>
+                    <div class="blank-line">&nbsp;</div>
+                    <div class="comment"># Output "Hello World!"</div>
+                    <div>g<span class="op">.</span>salute</div>
+  
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="content">
+
+
+
+
+<div class="post">
+  <h3><a href="/ja/news/2011/04/05/rubyist-magazine-0033-published/">Rubyist Magazine 0033号 発行</a></h3>
+
+  <p><a href="http://jp.rubyist.net/">日本Rubyの会</a>有志による、ウェブ雑誌<a href="http://jp.rubyist.net/magazine/">Rubyist Magazine</a>の<a href="http://jp.rubyist.net/magazine/?0033">0033号</a>がリリースされました(<a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/47953">[ruby-list:47953]</a>)。
+お楽しみください。</p>
+
+  
+
+  <p class="post-info">Posted by maki on 05 Apr 2011</p>
+</div>
+
+
+<div class="post">
+  <h3><a href="/ja/news/2011/02/22/planned-maintenance-of-redmine-ruby-lang-org/">redmine.ruby-lang.orgメンテナンスのお知らせ</a></h3>
+
+  <p><a href="http://redmine.ruby-lang.org">Rubyの課題追跡システム</a>は2011-02-23 10:00+09:00から24:00まで、メンテナンスのためサービスを停止します。</p><p>恐れ入りますが期間中の報告の際は<a href="mailto:ruby-dev@ruby-lang.org">ruby-dev</a>メーリングリストに投稿なさるか、もしくはサービス再開までお待ちください。</p>
+
+  <p><a href="/ja/news/2011/02/22/planned-maintenance-of-redmine-ruby-lang-org/">続きを読む&#8230;</a></p>
+
+  <p class="post-info">Posted by Yugui on 22 Feb 2011</p>
+</div>
+
+
+<div class="post">
+  <h3><a href="/ja/news/2011/02/18/exception-methods-can-bypass-safe/">Exceptionのメソッドの$SAFE機構をバイパス可能な脆弱性について</a></h3>
+
+  Exception#to_sメソッドに$SAFEによるチェックを回避できる脆弱性が発見されました。この脆弱性により、信頼されないコードによって任意の文字列の変更が可能です。
+
+  <p><a href="/ja/news/2011/02/18/exception-methods-can-bypass-safe/">続きを読む&#8230;</a></p>
+
+  <p class="post-info">Posted by Shugo Maeda on 18 Feb 2011</p>
+</div>
+
+
+
+<div id="news">
+  <h3><a href="/ja/news/">その他のニュース</a></h3>
+  <ul>
+    <li><a href="/ja/news/2011/02/18/fileutils-is-vulnerable-to-symlink-race-attacks/">FileUtilsのsymlink race attack脆弱性について</a>
+      <span class="post-info">Posted by Shugo Maeda on 18 Feb 2011</span></li>
+    <li><a href="/ja/news/2010/12/25/ruby-1-8-7-p330-release/">Ruby-1.8.7-p330 リリース</a>
+      <span class="post-info">Posted by usa on 25 Dec 2010</span></li>
+    <li><a href="/ja/news/2010/12/25/ruby-1-9-2-p136-is-released/">Ruby 1.9.2-p136リリース</a>
+      <span class="post-info">Posted by Yugui on 25 Dec 2010</span></li>
+  </ul>
+  <ul>
+    <li><a href="/ja/news/2010/08/18/ruby-1-9-2-is-released/">Ruby 1.9.2リリース</a>
+      <span class="post-info">Posted by Yugui on 18 Aug 2010</span></li>
+    <li><a href="/ja/news/2010/08/16/ruby-1-8-7-p302-is-released/">Ruby 1.8.7-p302 リリース</a>
+      <span class="post-info">Posted by maki on 16 Aug 2010</span></li>
+    <li><a href="/ja/news/2010/08/16/ruby-1-9-1-p430-is-released/">Ruby 1.9.1-p430 リリース</a>
+      <span class="post-info">Posted by maki on 16 Aug 2010</span></li>
+  </ul>
+  <p class="more"><a href="/ja/news/">もっと読む&#8230;</a></p>
+</div>
+
+
+
+
+            </div>
+          </div>
+          <hr class="hidden-modern" />
+          <div id="sidebar-wrapper">
+            <div id="sidebar">
+
+<div class="navigation"><a href="/ja/downloads/"><img src="/images/download.gif" alt="Download Ruby" title="" /></a></div>
+
+
+<div class="navigation">
+  <h3><strong>はじめよう!</strong></h3>
+  <ul class="menu">
+    <!-- <li><a href="http://tryruby.hobix.com/">Try Ruby!</a></li> -->
+    <li><a href="/ja/downloads/">ダウンロード</a></li>
+    <li><a href="http://www.ruby-lang.org/ja/install.cgi?cmd=view;name=top">インストールガイド</a></li>
+    <!-- <li><a href="http://www1.tf.chiba-u.jp/~shin/tutorial/index.rb">チュートリアル</a></li> -->
+  </ul>
+</div>
+
+<div class="navigation">
+  <h3><strong>探求しよう!</strong></h3>
+  <ul class="menu">
+    <li><a href="/ja/documentation/">ドキュメント</a></li>
+    <li><a href="/ja/libraries/">ライブラリ</a></li>
+  </ul>
+</div>
+
+<div class="navigation">
+  <h3><strong>コミュニティに参加しよう</strong></h3>
+  <ul>
+    <li><a href="/ja/community/mailing-lists/">メーリングリスト</a>: 世界中のプログラマとRubyについて話しましょう。</li>
+    <li><a href="http://jp.rubyist.net/">日本Rubyの会</a>: Rubyの利用者/開発者の支援を目的としたグループです。</li>
+    <li><a href="http://www.rubyist.net/~kazu/samidare/">更新順リンク</a>: Ruby関連のサイトのリンクを更新順に並べたものです。</li>
+  </ul>
+</div>
+
+
+<h3>RubyForge トッププロジェクト</h3>
+
+<ul>
+<li><a href="http://rubyforge.org/projects/rails/" title="Rails is a web-application framework for the MVC pattern that includes both a template engine, controller framework, and object-relational mapping package. Everything needed to develop web-apps that can run on CGI, FastCGI, and mod_ruby.">Rails</a></li>
+
+<li><a href="http://rubyforge.org/projects/flvtool2/" title="FLVTool2 is a manipulation tool for Macromedia Flash Video files (FLV).
+It can calculate a lot of meta data, insert an onMetaData tag, cut FLV files, add cue points (onCuePoint), show the FLV structure and print meta data information in XML or YAML.">FLVTool2</a></li>
+
+<li><a href="http://rubyforge.org/projects/codeforpeople/" title="dozens of ruby libraries released by codeforpeople.com">codeforpeople</a></li>
+
+<li><a href="http://rubyforge.org/projects/instiki/" title="A wiki clone pretty and easy to set up. Runs on Rails and focuses on portability and stability. Supports file uploads, PDF export, RSS, multiple users and password protection. Some use Instiki as a CMS because of it’s ability to export static pages.">Instiki</a></li>
+
+<li><a href="http://rubyforge.org/projects/freeride/" title="The FreeRIDE project is a pure Ruby Integrated Development Environment.">FreeRIDE</a></li>
+
+</ul>
+<p class="more"><a href="/en/libraries/top-projects/">もっと読む&#8230;</a></p>
+
+
+<h3>Syndicate</h3>
+<p><a href="/ja/feeds/news.rss">最近のニュース (RSS)</a></p>
+            </div>
+          </div>
+          <hr class="hidden-modern" />
+          <div class="foot">
+            <div class="site-links">
+<a href="/ja/downloads/">ダウンロード</a><span class="separator"> | </span><a href="/ja/documentation/">ドキュメント</a><span class="separator"> | </span><a href="/ja/libraries/">ライブラリ</a><span class="separator"> | </span><a href="/ja/community/">コミュニティ</a><span class="separator"> | </span><a href="/ja/dev/">コア開発</a><span class="separator"> | </span><a href="/ja/news/">ニュース</a><span class="separator"> | </span><a href="/ja/security/">セキュリティ</a><span class="separator"> | </span><a href="/ja/about/">Rubyとは</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="search-box">
+<form id="search-form" action="http://www.google.co.jp/cse">
+  <table class="fieldset">
+    <tr>
+      <td>
+        <input class="field" type="text" name="q" size="31" style="background: white url(http://www.google.com/coop/intl/ja/images/google_custom_search_watermark.gif) left no-repeat" onfocus="this.style.background='white'" onblur="if (/^\s*$/.test(this.value)) this.style.background='white url(http://www.google.com/coop/intl/ja/images/google_custom_search_watermark.gif) left no-repeat'"/>
+      </td>
+      <td>
+        <input type="hidden" name="cx" value="008288045305770251182:fvruzsaknew" />
+        <input type="hidden" name="ie" value="UTF-8" />
+        <input class="button" type="submit" name="sa" value="検索" />
+      </td>
+    </tr>
+  </table>
+</form>
+      </div>
+      <div id="footer">
+        <div class="fine-print">
+          <p>Content available in <a href="/en/">English</a>, <a href="/fr/">French</a>, <a href="/ja/">Japanese</a>, <a href="/ko/">Korean</a>, <a href="/pl/">Polish</a>, <a href="/es/">Spanish</a>, <a href="/pt/">Portuguese</a>, <a href="/zh_cn/">Simplified Chinese</a>, <a href="/zh_TW/">Traditional Chinese</a>, <a href="/id/">Bahasa Indonesia</a>, <a href="/de/">German</a>, <a href="/it/">Italian</a>, <a href="/cs/">Czech</a>, <a href="/bg/">Bulgarian</a> and <a href="/tr/">Turkish</a>.</p> 
+          <p>このサイトはRubyと<a href="http://radiantcms.org">Radiant CMS</a>によって構築されています。
+          また、コンテンツはRubyコミュニティによって管理されています。
+          質問やコメントは
+            <a href="mailto:webmaster@ruby-lang.org">webmaster</a>
+          までお願いします。</p>
+        </div>
+
+      </div>
+    </div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript" defer="defer">
+// <![CDATA[
+_uacct = "UA-620926-1";
+urchinTracker();
+// ]]>
+</script>
+  </body>
+</html>
