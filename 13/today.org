@@ -1,4 +1,4 @@
-20110603\013
+20110604\013
 * 今日必要になるgem
   - nokogiri
     gem install nokogiri
