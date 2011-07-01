@@ -1,0 +1,140 @@
+Rubyのメタプログラミングでもやってみよう
+01 オブジェクトとメソッド呼び出し
+* オブジェクト
+** オブジェクトの中身
+   #+ BENGIN_EXAMPLE
+   class MyClass
+     def my_method
+       @v = 1 # @vは v という名前のインスタンス変数
+     end
+   end
+
+   obj = MyClass.new # オブジョクトを作ります
+   obj.class  # => MyClass  <- オブジェクトのクラスは何?
+   obj.instance_variables # => []   <- objがもっているインスタンス変数は?
+   obj.my_method
+   obj.instance_variables # => [:v]   <- vというインスタンス変数がある
+   obj.methods  # => [:my_method,...]   <- objが使えるメソッドは？ いろいろでる
+   obj.methods.grep(/my/) # => [:my_method]  <- myという名前ではじまるメソッドは?
+   #+ END_EXAMPLE
+   図2-1
+   図2-2
+** クラスもオブジェクト
+   #+ BENGIN_EXAMPLE
+   MyClass.class # => Class   # obj.class.class
+   Class.instance_methods(false) #=> => [:allocate, :new, :superclass]
+   #+ END_EXAMPLE
+   - new はそのクラスのオブジェクトを作成する
+   - allocateはnewの補助をするメソッド
+   - superclass 親のクラスを調べる
+   #+ BEGIN_EXAMPLE
+   MyClass.superclass # => Object
+   Class.superclass # => Module
+   #+ END_EXAMPLE
+   - MyClass は Classクラスのオブジェクトなので Classのインスタンスメソッドが
+     使用できる
+   - Classの親クラスはModule
+     図2-3
+* メソッドの呼び出し
+** メソッドの呼び出しで何がおきるか
+  1. メソッド探す
+     - メソッド探索とよぶ
+  2. メソッドを実行する
+     - selfというものが必要
+** メソッド探索
+   - 確認
+     - レシーバ
+       obj.my_method と書いた場合 obj がレシーバ
+     - メソッド
+       obj.my_method と書いた場合 my_method がメソッド
+   - メソッドを探す場合はレシーバの継承チェーンを辿る
+     - 継承チェーンを調べる場合は ancestors メソッドを利用する
+       #+ BEGIN_EXAMPLE
+       class MyClass
+         def my_method
+           'my_method()'
+         end
+       end
+
+       class MySubClass < MyClass   # MyClassを継承する
+       end
+
+       obj = MySubClass.new
+       obj.my_method()  # => "my_method()"
+       obj.ancestors  # => [MySubClass, MyClass, Object, Kernel, BaseObject]
+       #+ END_EXAMPLE
+       図2-4
+       superclassじゃないものもまざってるぞ…
+*** メソッド探索の中にモジュール
+    - インクルードされたモジュールはメソッド探索に加わる
+      #+ BEGIN_EXAMPLE
+      module MyModule
+        def my_method
+          "my_method()"
+        end
+      end
+
+      class MyClass
+        import MyModule
+      end
+
+      class MySubClass < MyClass
+      end
+
+      obj = MySubClass.new
+      obj.my_method() # => "my_method()"
+      obj.ancestors # => [MySubClass, MyClass, MyModule, Object. ...]
+      #+ END_EXAMPLE
+      図2-5
+** メソッドの呼び出し
+   - メソッドのときに必要なものを考えよう
+     #+ BEGIN_EXAMPLE
+     def my_method
+       temp = @x + 1
+       my_other_method(temp)
+     end
+     #+ END_EXAMPLE
+     - @x はどのオブジェクトがもっている @x なのか
+     - my_other_methodのレシーバは どのオブジェクトなのか
+   - ともに self というオブジェクトが対象となる
+     - my_methodのレシーバが self になる
+     - my_other_methodのようにレシーバがないメソッドは自動的にレシーバがselfになる
+       図2-6
+*** 補足
+    privateに設定されているメソッドはレシーバを明示することができない
+*** クラス定義でのself
+    #+ BEGIN_EXAMPLE
+    class MyClass
+      self # =>  MyClass
+      superclass # => Object
+    end
+    #+ END_EXAMPLE
+** 演習? p メソッドの呼び出しを辿ってみよう
+   p メソッドは Kernelモジュールで定義されている
+   #+ BEGIN_EXAPLE
+   p "hoge"
+   self # => main
+   self.class # => Object
+   Object.ancestors # => [Object, Kernel, BasicObject]
+   Object.instance_methods().grep(/^p$/) # => []  <- みつからない
+   Kernel.methods(false).grep(/^p$/) # => [:p] # モジュールはメソッドの集りなのでinstance_methodsじゃない
+   # みつけた!!
+   self.p # プライベートなメソッドだ!と怒られる
+   #+ END_EXAMPLE
+* まとめ
+  - オブジェクトはインスタンス変数とクラスへのリンクで構成される
+  - オブジェクトのメソッドはオブジェクトのクラスに存在する。
+    - オブジェクト自身がもっているわけではない
+  - クラスはClassクラスのオブジェクトである
+  - Class は Module のサブクラスである。
+    - モジュールはメソッドが集まるだけ
+    - クラスは new を使いオブジェクトを生成できる
+  - クラスは BaseObjectまでへの繋がりを必ずもっている
+  - メソッドが呼び出されると対象のオブジェクト(レシーバ)のクラスを辿る
+    -> 対応するメソッドが見付かるとその手続きが呼び出される
+  - クラスがモジュールを読み込むとBaseObjectまでの繋がりに割り込む
+  - メソッド内ではレシーバがselfとなる
+  - メソッドを呼びだすときレシーバが未指定の場合はselfになる
+  - インスタンス変数は常に self のものが使用される
+  - モジュールを定義する際にはモジュールそのものが self になる
+    - クラスも同様

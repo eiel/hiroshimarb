@@ -1,0 +1,11 @@
+* 広島Ruby勉強会 #014 平成23年7月2日(土)
+  - 三篠公民館
+  - 14:00-18:00
+* 内容(予定)
+  - OSS OpenLab の Ruby 研修用コンテンツ を参考にrailsを使ってみる
+    - https://www.openlab.ipa.go.jp/modules/information/ruby_training.html
+  - 誰かがRubyについて話してくれるはず。
+    - メタプログラミングRubyを参考になんか喋る @eielh
+    - 未定(不明)
+  - 来月から誰か何か連載してください を考える
+    - Ruby レシピブックが候補にあがってるけど…
