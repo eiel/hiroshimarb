@@ -2,3 +2,10 @@
   - プロジェクタ投影用資料 p25
     root :to => "tweets#index" の部分が途中に改行がはいっておりわかりにくい
   - ペアプログラミングを交代するタイミングがかいてあるといいな。
+  - sign_outが動かない
+    以下のようにかくと動いた
+    #+ BEGIN_EXAMPLE
+    <%= link_to('Sign out', destroy_user_session_path, :method => :delete )
+    #+ END_EXAMPLE
+  - homeへのリンクがない。
+  - 詰まると難しい。
