@@ -1,0 +1,510 @@
+RailsでRspecを使ってみよう
+* 内容
+  前回作成したtwitterを作成する上で
+  - rspec
+  - capybara
+  - haml
+  - factory_girl
+  などを使ってみる
+* RailsでRspecを使うには
+** railsプロジェクトを作成する
+   test-unitやprotottypeを使用しないようにプロジェクトを作成します
+  #+BEGIN_EXAMPLE
+  $ rails new twitter2 --skip-test-unit --skip-prototype
+
+  省略形
+  $ rails new twitter2 -T -J
+
+  -p(--pretend) を使用すると生成されるものを確認できます。
+  その他 option などを確認するには rails new --help とします。
+
+  $ cd twitter2
+  #+END_EXAMPLE
+** rspecの設定をする
+   Gemfileにrspec-railsを追加します。
+   #+BEGIN_EXAMPLE
+   # Gemfile
+   gem 'rspec-rails'
+   #+END_EXAMPLE
+
+   rspec-railsをインストールします。
+   #+BEGIN_EXAMPLE
+   $ bundle install
+   補足: bundle install すると必要なgemをインストールしてくれます
+   #+END_EXAMPLE
+
+   rails にrspecの設定を行います。
+   #+BEGIN_EXAMPLE
+   $ rails g rspec:insntall
+   #+END_EXAMPLE
+** templateエンジン hamlのインストール
+   Gemfileにhaml-railsを追加します。
+   #+BEGIN_EXAMPLE
+   # Gemfile
+   gem 'haml-rails'
+
+   $ bunudle install
+   #+END_EXAMPLE
+** FactoryGirlのインストール
+   テスト用のDBデータを作成するのに使用します。
+   Gemfileに factory_girl_railsを追加します
+   #+BEGIN_EXAMPLE
+   # Gemfile
+   gem 'factory_girl_rails'
+
+   $ bundle install
+   #+END_EXAMPLE
+   rspec 内で楽に使えるように spec_helper.rbに以下の記述を追加。
+   Factory.create とかかないといけないところを createですませることができる
+   #+BEGIN_EXAMPLE
+   config.include Factory::Syntax::Methods
+   #+END_EXAMPLE
+** Capybaraのインストール
+   ユーザの操作を自動化するのに利用します。
+   Gemfileに capybaraを追加します
+   #+BEGIN_EXAMPLE
+   # Gemfile
+   gem 'capybara'
+
+   $ bundle install
+   #+END_EXAMPLE
+* つぶやきを投稿する機能を作る
+** インテグレーションテストを作成する
+   最終的な完成物をイメージしてインテグレーションテストを作成しておきましょう。
+   第一段階としては
+   - "/tweets/" でつぶやきの一覧がみれる。
+   - "/tweets/new" でつぶやきの投稿ができる。
+     - つぶやいた後は "/twwets"に移動する
+     - 移動後はつぶやいた内容が追加されている。
+   とします。
+
+   #+BEGIN_EXAMPLE
+   # ツイート機能を作るために振舞いを定義しよう
+   $ rails g integration_test tweets
+   #+END_EXAMPLE
+
+   期待する振舞いをかきます。(spec/requests/tweets_spec.rb
+   #+BEGIN_EXAMPLE
+# -*- coding: utf-8 -*-
+require 'spec_helper'
+
+describe "Tweets" do
+
+  context "つぶやきが投稿されている" do
+    before :each do
+      # つぶやきを作成しておく FactoryGirlを使用する
+      # Tweetってモデルがあるとよさそう -> モデルを用意しよう!
+      # Factory.create の省略 create
+      create :tweet, :tweet => "つぶやかれてる…。"
+    end
+
+    it "つぶやきの一覧がみれる" do
+      # "/"が TweetsControllerのindexアクションヘ
+      # コントローラを用意しよう
+      visit "/"
+      # つぶやきは ".tweetというクラスをもつタグで表示しよう"
+      # ビューを用意しよう!
+      page.should have_css ".tweet"
+      # 内容もちゃんと確認しよう
+      page.html.should match /つぶやかれてる…。/
+    end
+
+    it "つぶやきの投稿ができる" do
+      visit "/"
+      # id が tweet_tweet に入力できるようにしよう Tweetモデルにはtweetという項目をつけよう
+      fill_in "tweet_tweet", :with => "つぶやいてみます。"
+      # tweetとかかれたボタンを作成しよう
+      click_button "tweet"
+      # 動作確認 つぶやいたばかりの内容がでるように
+      page.html.should match /つぶやいてみます。/
+    end
+  end
+end
+   #+END_EXAMPLE
+
+   動作確認をします。
+   rspec spec/requests/tweets_spec.rb
+   create :tweet ができない!
+   - FactoryGirlをかいてない
+     - モデルをかいてない
+       - モデルをつくろう!
+** モデル
+   ファクトリを用意するにはツイートモデルが必要。
+   #+BEGIN_EXAMPLE
+   $ rails g model Tweet tweet:string
+   $ rake db:create
+   $ rake db:migrtae
+   #+END_EXAMPLE
+
+   ファクトリをつくろう (spec/factories.rb)
+   #+BEGIN_EXAMPLE
+   # -*- coding: utf-8 -*-
+   FactoryGirl.define do
+     factory :tweet do
+       tweet 'つぶやき。'
+     end
+   end
+   #+END_EXAMPLE
+   動作を確認しよう
+   #+BEGIN_EXAMPLE
+   rspec spec/request
+   #+END_EXAMPLE
+
+   作っもいない visit "/"が成功する
+   #+BEGIN_EXAMPLE
+   rm public/index.html
+   #+END_EXAMPLE
+   visit "/" できるようにしよう
+** コントローラの雛形
+   とりあえず、雛形を作成
+   #+BEGIN_EXAMPLE
+   rails g controller Tweets index
+   #+END_EXAMPLE
+   - ルーティングをかこう
+   - コントローラの振舞を定義しよう!
+     - コントローラの仕事は？
+       - ビューに必要なデータをわたす
+         - GET index
+       - ユーザからの要求をうけてモデルの状態を変更
+         - POST create
+** ルーティング
+   ルーティングのspecファイルを記述(spec/routing/tweet_routing_spec.rb)
+   #+BEGIN_EXAMPLE
+   require 'spec_helper'
+
+   describe "routing for Tweets" do
+     # 一覧表示する
+     it { get("/").should route_to("tweets#index") }
+     # 投稿できるようにしたい
+     it { post("/tweets/create").should route_to("tweets#create") }
+   end
+   #+END_EXAMPLE
+   動作確認
+   #+BEGIN_EXAMPLE
+   $ rspec spec/routing
+   #+END_EXAMPLE
+   マッチするルーティングがないよ!といわれる。
+   -> 実装しよう! (config/routes.rb)
+   #+BEGIN_EXAMPLE
+   root :to => "tweets#index"
+   resources :tweets
+   #+END_EXAMPLE
+   resourcesを使用すると index new create edit update delete
+   のルーティングが自動生成される。
+** ビュー
+   一覧画面の振舞を定義する(spec/views/tweets/index.html.haml_spec.rb
+   #+BEGIN_EXAMPLE
+# -*- coding: utf-8 -*-
+require 'spec_helper'
+
+describe "tweets/index.html.haml" do
+  before :each do
+    assign(:tweets,[create(:tweet, :tweet => "つぶやき1")])
+    assign(:tweet,Tweet.new)
+  end
+
+  it "つぶやき1が表示される" do
+    render
+    rendered.should match(/つぶやき1/)
+  end
+
+  it "つぶやきフォームがある" do
+    render
+    rendered.should match(/<form .*?>/)
+  end
+
+  it "つぶやきボタンがある" do
+    render
+    rendered.should match(/<.*?type="submit".*?value="tweet".*?>/)
+  end
+end
+   #+END_EXAMPLE
+   ビューの実装
+   #+BEGIN_EXAMPLE
+= form_for @tweet do |f|
+  = f.text_field :tweet
+  = f.submit "tweet"
+%table
+  - @tweets.each do |tweet|
+    %tr.tweet
+      %td= tweet.tweet
+      %td= tweet.created_at
+   #+END_EXAMPLE
+
+  細かくテストしたい場合はNokogiriなどを使用する
+** コントローラ
+   統合テストとビューのテストからやるべきことは想像できるはず、
+   他のテストに比べるとやや作成しづらい。
+   #+BEGIN_EXAMPLE
+# -*- coding: utf-8 -*-
+require 'spec_helper'
+
+describe TweetsController do
+
+  describe "GET 'index'" do
+    it "ビューにツイートのデータをわたすこと" do
+      create :tweet
+      get :index
+      # ビューにツイートデータを渡す
+      assigns(:tweets).should have(1).items
+      assigns(:tweet).should_not be_nil
+    end
+  end
+
+  describe "POST 'create'" do
+    it "ツイートを作成すること" do
+      n = Tweet.count
+      post :create, :tweet => attributes_for(:tweet)
+      Tweet.count.should == n+1
+    end
+
+    it "/ へリダイレクトすること" do
+      post :create
+      response.should redirect_to("/")
+    end
+  end
+
+end
+   #+END_EXAMPLE
+
+   必要な機能を実装していく
+   #+BEGIN_EXAMPLE
+class TweetsController < ApplicationController
+  def index
+    @tweets = Tweet.all
+    @tweet = Tweet.new
+  end
+
+  def create
+    tweet = Tweet.new(params[:tweet])
+    tweet.save
+    redirect_to "/"
+  end
+end
+   #+END_EXAMPLE
+
+   必要な機能が実装しおわったら統合テストを確認
+   #+BEGIN_EXAMPLE
+   $ rspec spec/requests
+   #+END_EXAMPLE
+* ちょっと整理
+  specディレクトリの中身について
+  - controllers
+    コントローラのテストをいれていく
+    - ルーティングの実装に影響されたり
+      ビューファイルがないと失敗したりするみたい
+  - helpers
+    ヘルパーの単体テストをいれていく
+  - models
+    モデルの単体テストをいれていく
+  - requests
+    Capybaraを使用した統合テストをいれていく
+  - routting
+    ルーティングのテストをいれていく(コントローラに依存してしまうので単体ではない？)
+  - factories
+    FactoryGirlの定義をいれていく
+  - views
+  全体の流れ -> ビュー -> コントローラ -> ルーティング -> モデル
+  の順番で振舞をかいていくと作りやすい。
+  しかし、ルーティングやモデルといった部品は依存しやすく、
+  いつのまにか使って
+  全く依存しないようにテストをかくのは大変。
+  request spec を書いたときに必要なものを考えて
+  必要となりそうなモデルとモデルの雛形を用意しておく。
+  その上でコントローラをつくり、ビューの振舞をかいていくとよさそう。
+* rspecが遅すぎます。-> sporkを使おう。
+** インストール
+  Gemflieにsporkを追加
+  #+BEGIN_EXAMPLE
+  # Gemfile
+  gem 'spork'
+  #+END_EXAMPLE
+
+  インストール
+  #+BEGIN_EXAMPLE
+  $ bundle install
+  $ spork --bootstrap
+  #+END_EXAMPLE
+
+  spec_helper.rb を修正する
+  初期状態では、モデルやコントローラの変更の度にsporkを再起動する必要がある
+  これらを修正します。
+
+  Spork.preforkとeach_runというブロックができている。
+  それぞれのタイミングでやるべきことを書いていく。
+  preforkにはもともとの設定を。
+  each_runにはrspecを実行する度にする処理を記述。
+  spec/spec_helper.rb (抜粋)
+  #+BEGIN_EXAMPLE
+require 'rubygems'
+require 'spork'
+
+Spork.prefork do
+  # Loading more in this block will cause your tests to run faster. However, 
+  # if you change any configuration or code from libraries loaded here, you'll
+  # need to restart spork for it take effect.
+  ENV["RAILS_ENV"] ||= 'test'
+  require File.expand_path("../../config/environment", __FILE__)
+  require 'rspec/rails'
+
+  # Requires supporting ruby files with custom matchers and macros, etc,
+  # in spec/support/ and its subdirectories.
+  Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
+  RSpec.configure do |config|
+    # == Mock Framework
+    #
+    # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
+    #
+    # config.mock_with :mocha
+    # config.mock_with :flexmock
+    # config.mock_with :rr
+    config.mock_with :rspec
+
+    # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+    config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+    # If you're not using ActiveRecord, or you'd prefer not to run each of your
+    # examples within a transaction, remove the following line or assign false
+    # instead of true.
+    config.use_transactional_fixtures = true
+    config.include Factory::Syntax::Methods
+  end
+  ActiveSupport::Dependencies.clear
+end
+
+Spork.each_run do
+  # This code will be run each time you run your specs.
+  Twitter2::Application.reload_routes!
+end
+  #+END_EXAMPLE
+** rspecがsporkを使用するように
+   .rspec に--drbを追加します。
+   #+BEGIN_EXAMPLE
+   --colour --drb
+   #+END_EXAMPLE
+** sporkの起動
+   sporkはサーバとなるのでrspecを実行する際には起動しておく必要がある。
+   #+BEGIN_EXAMPLE
+   $ spork
+   #+END_EXAMPLE
+   起動していない場合は --drbが無視されるだけで実行はできます。
+
+   あとは普通にrspecを使用する
+* ユーザ認証の導入
+** deviseのインストール
+   #+BEGIN_EXAMPLE
+   gem 'devise'
+   #+END_EXAMPLE
+
+   #+BEGIN_EXAMPLE
+   $ bundle install
+   $ rails g devise:install
+   #+END_EXAMPLE
+
+   コントローラのテストでログインを簡単にできるように
+   spec_helper.rbへ追加
+   #+BEGIN_EXAMPLE
+   config.include Devise::TestHelpers, :type => :controller
+   #+END_EXAMPLE
+** テストの修正
+   統合テストを修正していく
+   spec/requests/tweet_spec.rb
+   #+BEGIN_EXAMPLE
+# -*- coding: utf-8 -*-
+require 'spec_helper'
+
+describe "Tweets" do
+
+  context "認証済" do
+    before :each do
+      @user = create :user, :password => "hogehoge"
+      visit "/users/sign_in"
+      fill_in "user_email", :with => @user.email
+      fill_in "user_password", :with => "hogehoge"
+      click_button "Sign in"
+    end
+    context "つぶやきが投稿されている" do
+      before :each do
+        # つぶやきを作成しておく FactoryGirlを使用する
+        # Tweetってモデルがあるとよさそう -> モデルを用意しよう!
+        # Factory.create の省略 create
+        create :tweet, :tweet => "つぶやかれてる…。"
+      end
+
+      it "つぶやきの一覧がみれる" do
+        # "/"が TweetsControllerのindexアクションヘ
+        # コントローラを用意しよう
+        visit "/"
+        # つぶやきは ".tweetというクラスをもつタグで表示しよう"
+        # ビューを用意しよう!
+        page.should have_css ".tweet"
+        # 内容もちゃんと確認しよう
+        page.html.should match /つぶやかれてる…。/
+      end
+
+      it "つぶやきの投稿ができる" do
+        visit "/"
+        # id が tweet_tweet に入力できるようにしよう Tweetモデルにはtweetという項目をつけよう
+        fill_in "tweet_tweet", :with => "つぶやいてみます。"
+        # tweetとかかれたボタンを作成しよう
+        click_button "tweet"
+        # 動作確認 つぶやいたばかりの内容がでるように
+        page.html.should match /つぶやいてみます。/
+      end
+    end
+  end
+end
+   #+END_EXAMPLE
+
+** ユーザモデルの作成
+   #+BEGIN_EXAMPLE
+   $ rails g devise User
+   $ rake db:migrate
+   #+END_EXAMPLE
+
+
+   TweetsControllerに追加
+   #+BEGIN_EXAMPLE
+   before_filter :authenticate_user!
+   #+END_EXAMPLE
+
+   factriesの修正
+   #+BEGIN_EXAMPLE
+   # -*- coding: utf-8 -*-
+FactoryGirl.define do
+  factory :user do
+    sequence(:email) {|n| "person#{n}@example.com" }
+    password "hogehoge"
+  end
+
+  factory :tweet do
+    tweet 'つぶやき。'
+    association :user, :factory => :user
+  end
+end
+   #+END_EXAMPLE
+   create :tweet してる部分は特に修正する必要がない
+
+** つぶやきに関連を追加
+   #+BEGIN_EXAMPLE
+   $ rails g migration AddUserIdToTweets user_id:integer
+   $ rake db:migrate
+   #+END_EXAMPLE
+
+   app/models/tweet.rb
+   #+BEGIN_EXAMPLE
+   belong_to :user
+   #+END_EXAMPLE
+
+   app/models/user.rb
+   #+BEGIN_EXAMPLE
+   has_many :tweet
+   #+END_EXAMPLE
+
+   index.html.haml_spec.rb
+    user = create :user, :email => "person@person.jp"
+    assign(:tweets,[create(:tweet, :tweet => "つぶやき1", :user => user)])
+
+  index.html.haml
+      %td= tweet.user.email
