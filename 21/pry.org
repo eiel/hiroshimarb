@@ -1,0 +1,36 @@
+pryについて調べる
+* PryはIRBの強化版
+PryはIRBを置き換える強力なツールで、いろんな機能を提供するのに一から書き直されてる
+- https://github.com/pry/pry/
+** 機能
+- ソースコードブラウジング (pry-doc gem)
+- ドキュメントブラウジング
+- ライブヘルプシステム
+- エディタでメソッドをひらく (edit-method Class#method)
+- シンタックスハイライト
+- シェルコマンドとの統合
+- Gistとの統合
+- 状態へのナビゲーション (良い訳がわかばない) ( cd,ls)
+- ランタイムの実行 (console や debuggerの変わりに)
+- 外来オブジェクトのサポート(よくわからん
+- 強力で柔軟なコマンドシステム
+- 履歴を機能
+- pythonや Smalltalk また別のシステムから沢山の機能を輸入
+- たくさんとplugin
+** 解説
+- pry コマンドで実行でき .pryrc が読み込まれる
+- pry --helpでもっとたくさんの情報を取得できる
+- Rubyのコアメソッドのドキュメントをよむなら pry-docをインストール
+  - いれないと ArrayやStringのドキュメントがよめない？
+* Pryはオブジェクト空間をファイルシステムのように見せる
+- cdやlsでオブジェクトの階層をもぐったり、あるものを確認したり
+- pwd のようなものは nesting
+- binding.pry で実行中にpryへ
+  - exitで終了
+* install
+$ gem install pry pry-doc
+* よくあるパターンをさがしてみる
+* 文献
+- http://railscasts.com/episodes/280-pry-with-rails
+  Rails Cast
+- Rubyistよ、irbを捨ててPryを使おう http://labs.timedia.co.jp/2011/12/rubyist-should-use-pry.html
