@@ -1,3 +1,6 @@
 [submodule "22/rurema_review"]
 	path = 22/rurema_review
 	url = git://github.com/eiel/rurema_review.git
+[submodule "22/shell_sousa_kadai"]
+	path = 22/shell_sousa_kadai
+	url = git://github.com/furu/shell_sousa_kadai.git
